@@ -83,6 +83,8 @@ p { margin: 0; }
 .login:hover { text-decoration: underline; }
 .cta-ink { display: inline-flex; align-items: center; height: 52px; padding: 0 25px; background: var(--ink); color: #fff; font-family: var(--body); font-size: 16px; white-space: nowrap; transition: background-color .2s; }
 .cta-ink:hover { background: var(--red); }
+.cta-ink .sm { display: none; }
+@media (max-width: 520px) { .cta-ink .lg { display: none; } .cta-ink .sm { display: inline; } }
 .search-btn { width: 51px; height: 52px; display: grid; place-items: center; transition: background-color .2s; }
 .search-btn:hover { background: #ecebe6; }
 .burger { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; }
@@ -468,7 +470,7 @@ p { margin: 0; }
     </nav>
     <div class="actions">
       <button class="login" data-auth="login">Log in</button>
-      <button class="cta-ink" data-call>Read the call</button>
+      <button class="cta-ink" data-auth="submit" aria-label="Submit a manuscript"><span class="lg">Submit a manuscript</span><span class="sm">Submit</span></button>
       <button class="search-btn" id="searchBtn" aria-label="Search" aria-expanded="false"><img src="assets/search-square.svg" width="51" height="52" alt=""></button>
       <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
     </div>
