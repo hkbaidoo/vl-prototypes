@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Visible Language Homepage Prototype 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Arimo:wght@400;700&family=Geist:wght@400;500;600;700&family=Hanken+Grotesk:wght@500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&family=Libre+Franklin:wght@600;700&family=Roboto&display=swap">
+<style>
+/* Landing_Option 1 (Figma 168:5948), built to the frame: square buttons, full-height hero, 1440 canvas. Single light theme by design. */
+:root {
+  color-scheme: light;
+  --ink: #1d1d1f;
+  --ink2: #130d0b;
+  --text: #333;
+  --muted: #666;
+  --red: #ea434d;
+  --red-btn: #ea5757;
+  --red-hover: #d64a4a;
+  --dark: #221f20;
+  --mist: #e7ebef;
+  --line: #ededed;
+  --display: "Geist", "Inter", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --nav: "Arimo", "Helvetica Neue", Arial, sans-serif;
+  --franklin: "Libre Franklin", "Inter", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --ui: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+body { margin: 0; background: #fff; color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+img { display: block; max-width: 100%; }
+h1, h2, h3, h4 { margin: 0; font-weight: inherit; text-wrap: balance; }
+p { margin: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.frame { width: 100%; max-width: 1440px; margin: 0 auto; padding-inline: max(16px, min(64px, 4.5vw)); }
+.nowrap { white-space: nowrap; }
+
+/* ---------- Buttons (square, per the frame) ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 51px; padding: 0 18px; font-family: var(--body); font-weight: 500; font-size: 16px; line-height: 20px; white-space: nowrap; transition: background-color .2s, color .2s; }
+.btn-red { background: var(--red-btn); color: #fff; min-width: 168px; }
+.btn-red:hover { background: var(--red-hover); }
+.btn-ghost { color: #141414; }
+.btn-ghost.on-dark { color: #fff; }
+.btn-ghost:hover { text-decoration: underline; text-underline-offset: 4px; }
+.btn-ghost .ar { transition: transform .2s; display: inline-block; }
+.btn-ghost:hover .ar { transform: translateX(3px); }
+.tlink { display: inline-flex; align-items: center; gap: 4px; height: 24px; color: var(--red); font-family: var(--body); font-weight: 500; font-size: 14px; line-height: 18px; white-space: nowrap; }
+.tlink:hover { text-decoration: underline; text-underline-offset: 4px; }
+.tlink img { transition: transform .2s; }
+.tlink:hover img { transform: translateX(2px); }
+
+/* ---------- Header ---------- */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: #fff; border-bottom: 1px solid transparent; transition: border-color .2s, box-shadow .2s; }
+.site-header.scrolled { border-bottom-color: var(--line); box-shadow: 0 6px 24px rgba(0,0,0,.05); }
+.hdr { display: flex; align-items: center; gap: 13px; height: 108px; max-width: 1440px; margin: 0 auto; padding-inline: max(24px, env(safe-area-inset-left, 0px)); transition: height .25s; }
+.site-header.scrolled .hdr { height: 80px; }
+.brand { display: flex; align-items: center; gap: 8px; padding: 15px; width: 229px; flex: none; }
+.brand .mark { width: 44px; height: 44px; transform: scaleX(-1); }
+.brand .word { width: 98px; height: auto; }
+.menu { flex: 1; display: flex; align-items: center; justify-content: center; }
+.menu-item { position: relative; }
+.menu-btn { display: flex; align-items: center; gap: 4px; padding: 15px; font-family: var(--nav); font-size: 16px; line-height: 20px; color: var(--ink); }
+.menu-btn img { transition: transform .2s; }
+.menu-btn:hover { background: #f4f4f5; }
+.menu-item.open .menu-btn img { transform: rotate(180deg); }
+.dropdown { position: absolute; top: calc(100% + 8px); left: 0; min-width: 280px; background: #fff; border: 1px solid #e2e2e2; box-shadow: 0 20px 50px rgba(0,0,0,.12); padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity .18s, transform .18s, visibility 0s .18s; }
+.menu-item.open .dropdown { opacity: 1; visibility: visible; transform: none; transition: opacity .18s, transform .18s; }
+.dropdown a { display: block; padding: 10px 14px; font-size: 15px; color: var(--ink); }
+.dropdown a small { display: block; font-size: 13px; color: var(--muted); }
+.dropdown a:hover { background: #f6f6f4; }
+.actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.login { font-family: "Hanken Grotesk", var(--body); font-weight: 500; font-size: 14px; letter-spacing: -0.14px; color: #130d0b; padding: 12px 6px; margin-right: 2px; }
+.login:hover { text-decoration: underline; }
+.cta-ink { display: inline-flex; align-items: center; height: 52px; padding: 0 25px; background: var(--ink); color: #fff; font-family: var(--body); font-size: 16px; white-space: nowrap; transition: background-color .2s; }
+.cta-ink:hover { background: var(--red); }
+.search-btn { width: 51px; height: 52px; display: grid; place-items: center; transition: background-color .2s; }
+.search-btn:hover { background: #ecebe6; }
+.burger { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; }
+.burger span, .burger span::before, .burger span::after { display: block; width: 20px; height: 2px; background: var(--ink); position: relative; content: ""; }
+.burger span::before { position: absolute; top: -6px; } .burger span::after { position: absolute; top: 6px; }
+.searchbar { overflow: hidden; max-height: 0; transition: max-height .25s; background: #fff; }
+.searchbar.open { max-height: 140px; border-top: 1px solid var(--line); }
+.searchbar form { display: flex; gap: 0; padding-block: 18px 8px; }
+.searchbar input { flex: 1; min-width: 0; height: 52px; border: 1px solid #cfcfcf; border-right: 0; padding: 0 18px; font: inherit; }
+.searchbar input:focus { outline: none; border-color: var(--ink); }
+.search-note { padding-bottom: 14px; font-size: 13px; color: var(--muted); }
+@media (max-width: 1099px) {
+  .hdr { height: 76px; } .site-header.scrolled .hdr { height: 68px; }
+  .brand { width: auto; padding: 0; margin-right: auto; }
+  .menu { display: none; position: absolute; left: 0; right: 0; top: 100%; flex-direction: column; align-items: stretch; background: #fff; border-bottom: 1px solid var(--line); padding: 8px var(--gutter) 16px; box-shadow: 0 20px 40px rgba(0,0,0,.08); }
+  .menu.open { display: flex; }
+  .menu-btn { width: 100%; justify-content: space-between; }
+  .dropdown { position: static; box-shadow: none; border: 0; padding: 0 0 8px 8px; display: none; opacity: 1; visibility: visible; transform: none; }
+  .menu-item.open .dropdown { display: block; }
+  .burger { display: inline-flex; }
+}
+@media (max-width: 640px) { .login { display: none; } .cta-ink { height: 44px; padding: 0 14px; font-size: 14px; } .search-btn { width: 44px; height: 44px; } .brand .word { width: 84px; } .hdr { gap: 6px; padding-inline: 16px; } .actions { gap: 4px; } }
+
+/* ---------- Hero (full height) ---------- */
+.hero { display: flex; flex-direction: column; min-height: max(705px, calc(100svh - 108px)); background: linear-gradient(180deg, #fff 3.4%, #e8e8e8 43%, #fff 82.6%); }
+.hero .body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px var(--gutter) 56px; gap: 76px; }
+.hero .eyebrow { font-family: var(--display); font-weight: 500; font-size: 14px; line-height: 16px; letter-spacing: -0.12px; color: #222; }
+.hero h1 { font-family: var(--display); font-weight: 500; font-size: clamp(36px, 4.2vw, 60px); line-height: 1.07; letter-spacing: -0.02em; color: #1f1c1b; max-width: 940px; margin: 18px auto 0; }
+.hero .sub { font-size: clamp(20px, 2.2vw, 32px); line-height: 1.2; letter-spacing: -0.02em; color: #1f1c1b; margin-top: 20px; }
+.hero .row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.hero .copy > * { animation: rise .8s both; }
+.hero .copy > *:nth-child(2) { animation-delay: .08s; } .hero .copy > *:nth-child(3) { animation-delay: .16s; }
+.hero .row { animation: rise .8s .24s both; }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.pubby { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; padding: 20px var(--gutter); min-height: 85px; }
+.pubby p { font-size: 12px; line-height: 16.8px; letter-spacing: .5px; color: #1f1c1b; }
+.logos { display: flex; align-items: center; gap: 10.7px; }
+.logos a { display: grid; place-items: center; height: 35px; width: 121px; border-right: .5px solid #dedede; transition: opacity .2s; }
+.logos a:last-child { border-right: 0; }
+.logos a:hover { opacity: .65; }
+.logos img { max-height: 36px; width: auto; }
+@media (max-width: 420px) { .logos { gap: 4px; } .logos a { width: 104px; } }
+
+/* ---------- Latest Articles ---------- */
+.latest { background: var(--mist); padding: 48px 0 72px; }
+.lhead { text-align: center; padding-top: 12px; margin-bottom: 24px; }
+.lhead .kick { font-size: 18px; color: #141414; line-height: 27px; padding-block: 12px; }
+.lhead .kick b { color: var(--red); font-weight: 400; }
+.lhead h2 { font-family: var(--display); font-weight: 600; font-size: clamp(32px, 3.2vw, 44px); letter-spacing: -0.01em; color: #141414; line-height: 1.2; }
+.ltrack { display: flex; gap: 56px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 10px max(16px, calc((100vw - 1440px) / 2 + 62px), 4.3vw) 10px; scroll-padding-left: max(16px, calc((100vw - 1440px) / 2 + 62px), 4.3vw); cursor: grab; }
+.ltrack.dragging { cursor: grabbing; scroll-snap-type: none; }
+.ltrack.dragging a { pointer-events: none; }
+.ltrack::-webkit-scrollbar { display: none; }
+.lcard { position: relative; flex: none; width: min(884px, calc(100vw - 32px)); height: 392px; background: #fafbfb; scroll-snap-align: start; display: grid; grid-template-columns: 424px 1fr; gap: 16px; padding: 10px; text-align: left; transition: box-shadow .3s; }
+.lcard:hover { box-shadow: 0 18px 46px rgba(20,30,40,.10); }
+.lcard .pic { position: relative; background: var(--tint); overflow: hidden; display: grid; place-items: center; }
+.lcard .pic img { transition: transform .7s; }
+.lcard:hover .pic img { transform: scale(1.04); }
+.lcard .tag { position: absolute; top: 10px; left: 10px; width: 128px; height: 22px; background: #fff; font-size: 10px; line-height: 22px; padding-left: 5px; color: #77706e; z-index: 1; }
+.lcard .txt { display: flex; flex-direction: column; align-items: flex-start; padding-right: 20px; min-width: 0; }
+.chip { display: inline-flex; align-items: center; height: 28px; padding: 0 11px; background: rgba(221,221,221,.33); color: var(--muted); font-size: 14px; line-height: 20px; }
+.lcard h3 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 2.1vw, 30px); line-height: 1.06; color: var(--dark); margin-top: 23px; max-width: 414px; }
+.lcard:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.lcard .au { font-family: "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 24px; color: var(--text); margin-top: 16px; }
+.lcard .more { margin-top: auto; display: inline-flex; align-items: center; gap: 2px; height: 45px; font-weight: 500; font-size: 14px; color: #909090; transition: color .2s; }
+.lcard:hover .more { color: var(--red); }
+.lcard .more img { transform: rotate(-90deg); }
+.lnav { display: flex; justify-content: center; gap: 10px; padding-top: 36px; }
+.sq { width: 44px; height: 44px; display: grid; place-items: center; background: rgba(255,255,255,.58); color: #666; font-size: 20px; line-height: 1; transition: background-color .2s, color .2s, opacity .2s; }
+.sq:hover:not(:disabled) { background: #fff; color: var(--ink); }
+.sq:disabled { opacity: .4; cursor: default; }
+.lcount { align-self: center; min-width: 54px; text-align: center; font-family: var(--mono); font-size: 12px; color: #777; }
+@media (max-width: 760px) { .lcard { grid-template-columns: 1fr; height: auto; } .lcard .pic { height: 260px; } .lcard .txt { padding: 8px 6px 4px; } }
+
+/* ---------- Featured Articles (NYT layout) ---------- */
+.feat { padding: 96px 0; }
+.feat .frame { padding-inline: max(16px, min(70px, 4.8vw)) max(16px, min(65px, 4.5vw)); }
+.shead { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
+.shead h2 { font-family: var(--display); font-weight: 600; font-size: 32px; line-height: 38px; letter-spacing: -0.32px; color: var(--ink); }
+.ftop { display: grid; grid-template-columns: minmax(0, 842fr) minmax(0, 437fr); gap: 24px; align-items: start; }
+.free { background: #f8f8f8; border: 1px solid #cfcfcf; padding: 18px 24px 24px; display: flex; flex-direction: column; gap: 20px; }
+.frow { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 24px; align-items: start; }
+.fcol { display: flex; flex-direction: column; gap: 16px; }
+.rule { height: 1px; background: #e2e2e2; }
+.story { display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
+.story .lab { font-weight: 600; font-size: 10px; line-height: 14px; letter-spacing: .6px; color: var(--red); text-transform: uppercase; }
+.story h3 { font-family: var(--display); font-weight: 500; font-size: 16px; line-height: 20px; letter-spacing: -0.2px; color: var(--ink); }
+.story.lead h3 { font-size: 22px; line-height: 28px; }
+.story.big h3 { font-size: 24px; line-height: 30px; }
+.story p.d { font-size: 14px; line-height: 21px; color: #4a4a4a; }
+.story .m { font-weight: 600; font-size: 10px; line-height: 14px; letter-spacing: .6px; color: #777; text-transform: uppercase; }
+.story:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.fig { position: relative; overflow: hidden; cursor: pointer; }
+.fig.poster { height: 319px; background: #f3efe8; }
+.fig.poster img { position: absolute; width: 662px; max-width: none; height: 1024px; left: -88px; top: -698px; transition: transform .8s; }
+.fig.poster::after { content: ""; position: absolute; inset: -16px -12px; background: rgba(38,62,129,.72); transition: background-color .4s; }
+.fig.poster:hover::after { background: rgba(38,62,129,.45); }
+.fig.type { height: 315px; background: #a5aaac; display: grid; place-items: center; }
+.fig.type img { width: 390px; height: 266px; object-fit: cover; transition: transform .8s; }
+.fig:hover img { transform: scale(1.03); }
+.fig .cap { position: absolute; left: 12px; bottom: 12px; z-index: 1; background: #fff; color: var(--ink); font-size: 11px; font-weight: 600; letter-spacing: .5px; padding: 5px 9px; text-transform: uppercase; opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s; }
+.fig:hover .cap, .fig:focus-visible .cap { opacity: 1; transform: none; }
+.edcol { background: #f8f8f8; border: 1px solid #e2e2e2; padding: 36px 25px; display: flex; flex-direction: column; gap: 17px; min-height: 727px; }
+.edcol .lbl { display: flex; align-items: center; justify-content: space-between; font-family: var(--franklin); font-weight: 700; font-size: 16px; line-height: 20px; color: #121212; }
+.edcol .lbl a:hover { text-decoration: underline; }
+.edsw { display: flex; gap: 4px; }
+.edsw button { width: 28px; height: 28px; display: grid; place-items: center; background: #ececec; color: #333; font-size: 14px; transition: background-color .2s; }
+.edsw button:hover:not(:disabled) { background: #dcdcdc; }
+.edsw button:disabled { opacity: .35; cursor: default; }
+.edlist { display: flex; flex-direction: column; gap: 13px; }
+.edlist .ed { display: flex; flex-direction: column; gap: 4px; padding-bottom: 13px; border-bottom: 1px solid #dfdfdf; cursor: pointer; }
+.edlist .ed:last-child { border-bottom: 0; padding-bottom: 0; }
+.edlist .ed b { font-family: var(--body); font-weight: 500; font-size: 18px; line-height: 1.2; letter-spacing: -0.1px; color: #121212; }
+.edlist .ed:hover b { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.edlist .ed small { font-family: var(--franklin); font-weight: 600; font-size: 11px; line-height: 14px; letter-spacing: .4px; color: #5a5a5a; text-transform: uppercase; }
+.edpage { display: none; }
+.edpage.on { display: flex; animation: fade .35s both; }
+@keyframes fade { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: none; } }
+.edcol .rule-ink { height: 1px; background: #121212; }
+@media (max-width: 1100px) { .ftop { grid-template-columns: 1fr; } .edcol { min-height: 0; } }
+@media (max-width: 720px) { .frow { grid-template-columns: 1fr; } .fig { order: -1; } .fig.poster img { left: 50%; margin-left: -331px; } .fig.type img { width: 80%; height: auto; } }
+
+/* Yearbook banner */
+.yb { position: relative; overflow: hidden; background: var(--dark); color: #fff; min-height: 317px; margin-top: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 20px; gap: 22px; }
+.yb > :not(.gp) { position: relative; z-index: 1; }
+.yb h2 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 3.2vw, 44px); line-height: 1.07; letter-spacing: -0.88px; padding-block: 8px; }
+.yb p { font-size: clamp(18px, 1.9vw, 26px); line-height: 1.2; letter-spacing: -0.02em; padding-block: 8px; margin-top: -22px; }
+.yb .row { display: flex; gap: 10px; }
+.yb .btn { height: 43px; font-size: 13.5px; padding: 0 15px; }
+.yb .btn-red { min-width: 141px; }
+.yb .gp { position: absolute; left: calc(100% - 848px); top: 42px; width: 1440px; height: 292px; transform: rotate(-27deg); pointer-events: none; }
+
+/* Growth pattern (shared) */
+.gp svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- Explore Archives ---------- */
+.archives { padding: 57px 0 110px; }
+.covers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.cov { display: flex; flex-direction: column; gap: 12px; background: #fff; border: 1px solid #e7e3dc; padding: 12px 12px 18px; text-align: left; transition: box-shadow .3s, transform .3s; }
+.cov:hover { box-shadow: 0 18px 44px rgba(0,0,0,.08); transform: translateY(-3px); }
+.cov .img { height: 360px; overflow: hidden; }
+.cov .img img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s; }
+.cov:hover .img img { transform: scale(1.04); }
+.cov .lab { font-family: var(--mono); font-size: 11px; line-height: 15px; letter-spacing: .5px; color: #988f77; text-transform: uppercase; }
+.cov .cap { display: flex; align-items: stretch; justify-content: space-between; gap: 12px; }
+.cov .nm { font-family: var(--display); font-weight: 500; font-size: 17px; line-height: 22px; color: #201613; }
+.cov .dt { font-family: var(--display); font-size: 13px; line-height: 18px; color: #736761; margin-top: 2px; }
+.cov .go { width: 44px; flex: none; background: #efefef; display: grid; place-items: center; font-size: 18px; color: var(--ink); transition: background-color .2s, color .2s; }
+.cov:hover .go { background: var(--red); color: #fff; }
+@media (max-width: 1050px) { .covers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .covers { grid-template-columns: 1fr; } }
+
+/* ---------- Call for papers ---------- */
+.cfp { padding: 72px 0 80px; }
+.cfp .frame { padding-inline: max(16px, min(62px, 4.3vw)) max(16px, min(64px, 4.5vw)); }
+.cfpbox { position: relative; overflow: hidden; background: var(--dark); min-height: 403px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 47px 24px 56px; text-align: center; color: #fff; }
+.cfpbox > img { position: absolute; left: 50%; top: 50%; width: 1512px; max-width: none; height: 851px; transform: translate(-50%, -50%); object-fit: cover; opacity: .56; transition: transform 6s ease-out; }
+.cfpbox:hover > img { transform: translate(-50%, -50%) scale(1.05); }
+.cfpbox::before { content: ""; position: absolute; inset: 0; background: #9a353a; opacity: .67; }
+.cfpbox::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #9a3439 2.85%, #000 86%); opacity: .59; }
+.cfpbox > :not(img) { position: relative; z-index: 1; }
+.cfpbox .k { font-weight: 500; font-size: clamp(18px, 1.8vw, 26px); letter-spacing: .4px; line-height: 1.2; }
+.cfpbox h2 { font-family: var(--display); font-weight: 500; font-size: clamp(28px, 3.1vw, 44px); line-height: 1.18; letter-spacing: -0.9px; max-width: 861px; }
+.cfpbox .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
+.cfpbox .btn-ghost { height: 52px; padding: 0 12px; }
+
+/* ---------- Dispatches ---------- */
+.disp { background: var(--mist); padding: 110px 0; }
+.disp h2 { font-family: var(--display); font-weight: 500; font-size: clamp(32px, 3.1vw, 44px); line-height: 1.5; letter-spacing: -1.5px; color: var(--ink2); text-align: center; margin-bottom: 48px; }
+.dcards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.dcard { display: flex; flex-direction: column; gap: 16px; }
+.dcard .img { height: 300px; overflow: hidden; background: #cfd4d9; }
+.dcard .img img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s; }
+.dcard:hover .img img { transform: scale(1.05); }
+.dcard h3 { font-family: var(--display); font-weight: 500; font-size: 24px; line-height: 30px; letter-spacing: -0.5px; color: var(--ink2); }
+.dcard:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.dcard p { font-family: var(--display); font-size: 16px; line-height: 22px; color: #524742; }
+@media (max-width: 900px) { .dcards { grid-template-columns: 1fr; } }
+
+/* ---------- Contact, subscribe, footer ---------- */
+.contact { position: relative; background: var(--dark); color: #fff; padding-top: 96px; overflow: hidden; }
+.contact .frame { padding-inline: max(16px, min(88px, 6vw)) max(16px, min(72px, 5vw)); }
+.ccards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.ccard { background: #333; min-height: 242px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; transition: background-color .25s; }
+.ccard:hover { background: #3a3a3a; }
+.ccard h3 { font-family: var(--nav); font-size: 22px; line-height: 1.15; color: #fff; }
+.ccard p { font-weight: 300; font-size: 16px; line-height: 24px; color: #f8f8f8; margin-top: 10px; }
+@media (max-width: 900px) { .ccards { grid-template-columns: 1fr; } .ccard { min-height: 0; } }
+.subwrap { position: relative; z-index: 1; text-align: center; padding: 86px var(--gutter) 0; }
+.subwrap h2 { font-family: var(--display); font-weight: 500; font-size: 32px; line-height: 42px; max-width: 470px; margin: 0 auto; }
+.subwrap > p { color: #a6a5a2; font-size: 16px; line-height: 22px; margin-top: 21px; }
+.subform { display: flex; align-items: center; justify-content: space-between; width: min(511px, 100%); margin: 47px auto 0; background: #fff; padding: 0 5px; }
+.subform input { flex: 1; min-width: 0; height: 60px; border: 0; padding: 0 0 0 16px; font-family: "Archivo", var(--body); font-size: 16px; color: #111; background: transparent; }
+.subform input::placeholder { color: #999; }
+.subform input:focus { outline: none; }
+.subform:focus-within { box-shadow: 0 0 0 2px var(--red); }
+.subform button { width: 120px; height: 48px; background: var(--red); color: #fff; font-family: "Archivo", var(--body); font-weight: 500; font-size: 16px; transition: background-color .2s; flex: none; }
+.subform button:hover { background: var(--red-hover); }
+.form-msg { min-height: 22px; margin-top: 14px; font-size: 14px; color: #cfcfcf; }
+.form-msg.err { color: #ff9a9f; }
+.contact .gp { position: relative; height: 292px; margin-top: -116px; }
+.contact .gp svg { position: absolute; left: 50%; top: 0; width: 1440px; height: 292px; transform: translateX(-50%); }
+@media (min-width: 1441px) { .contact .gp svg { width: 100%; } }
+.footer { background: #333; color: #fff; padding: 57.6px 0 40px; margin-top: -99px; position: relative; z-index: 1; }
+.footer .frame { padding-inline: max(16px, min(181px, 12.6vw)) max(16px, min(179px, 12.4vw)); }
+.fnav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; min-height: 252px; }
+.fnav h3 { font-weight: 700; font-size: 18px; line-height: 14.4px; margin-bottom: 21px; }
+.fnav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.fnav a { font-family: "Roboto", var(--body); font-size: 12.24px; line-height: 14.4px; color: #fff; }
+.fnav a:hover { text-decoration: underline; }
+.divider { height: 0; border-top: .5px solid #bbb; }
+.legal { font-weight: 500; font-size: 10.8px; line-height: 18.72px; padding: 13px 0 30px; }
+.fbottom { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.fbottom p { font-weight: 500; font-size: 12px; line-height: 16px; white-space: pre-wrap; }
+.social { display: flex; align-items: center; gap: 27px; }
+.social a { opacity: .9; display: grid; place-items: center; transition: opacity .2s, transform .2s; }
+.social a:hover { opacity: 1; transform: translateY(-2px); }
+.social .li { width: 21px; height: 21px; border-radius: 1px; background: #fff; color: #333; font-family: var(--nav); font-weight: 700; font-size: 17px; line-height: 21px; text-align: center; }
+@media (max-width: 640px) { .fnav { grid-template-columns: 1fr 1fr; } }
+
+/* ---------- Article drawer ---------- */
+.drawer { position: fixed; inset: 0; z-index: 105; display: flex; justify-content: flex-end; background: rgba(0,0,0,.45); opacity: 0; transition: opacity .25s; }
+.drawer.show { opacity: 1; }
+.dpanel { width: min(520px, 100%); height: 100%; overflow: auto; background: #fff; color: var(--ink); transform: translateX(40px); transition: transform .3s; display: flex; flex-direction: column; }
+.drawer.show .dpanel { transform: none; }
+.dbar { display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 12px 0 24px; border-bottom: 1px solid #e2e2e2; position: sticky; top: 0; background: #fff; }
+.dbar span { font-family: var(--mono); font-size: 11px; letter-spacing: .5px; color: #988f77; text-transform: uppercase; }
+.xbtn { width: 44px; height: 44px; display: grid; place-items: center; }
+.xbtn:hover { background: #f2f2f2; }
+.dbody { padding: 28px 24px 40px; display: flex; flex-direction: column; gap: 14px; }
+.dbody .lab { font-weight: 600; font-size: 11px; letter-spacing: .6px; color: var(--red); text-transform: uppercase; }
+.dbody h2 { font-family: var(--display); font-weight: 500; font-size: 30px; line-height: 1.12; letter-spacing: -0.02em; }
+.dbody .au { font-size: 15px; color: #4a4a4a; }
+.dbody .sum { font-size: 16px; line-height: 1.6; color: #333; padding-top: 6px; border-top: 1px solid #e2e2e2; margin-top: 6px; }
+.dbody .facts { font-family: var(--mono); font-size: 12px; color: #777; }
+.dacts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.btn-out { border: 1px solid var(--ink); color: var(--ink); height: 51px; }
+.btn-out:hover { background: var(--red); border-color: var(--red); color: #fff; }
+.dbody .note { font-size: 12px; color: #888; }
+
+/* ---------- Call details modal ---------- */
+.modal { position: fixed; inset: 0; z-index: 106; display: grid; place-items: center; padding: 16px; background: rgba(0,0,0,.6); opacity: 0; transition: opacity .25s; }
+.modal.show { opacity: 1; }
+.mbox { position: relative; width: min(720px, 100%); max-height: 100%; overflow: auto; background: #fff; transform: translateY(16px); transition: transform .3s; }
+.modal.show .mbox { transform: none; }
+.mtop { position: relative; overflow: hidden; background: var(--dark); color: #fff; padding: 40px 32px 32px; }
+.mtop img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .5; }
+.mtop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(154,53,58,.8), rgba(0,0,0,.85)); }
+.mtop > * { position: relative; z-index: 1; }
+.mtop .k { font-weight: 500; font-size: 15px; letter-spacing: .3px; }
+.mtop h2 { font-family: var(--display); font-weight: 500; font-size: clamp(24px, 3vw, 32px); line-height: 1.15; margin-top: 12px; }
+.mbox .xbtn { position: absolute; top: 8px; right: 8px; z-index: 2; color: #fff; }
+.mbox .xbtn:hover { background: rgba(255,255,255,.12); }
+.mbody { padding: 24px 32px 32px; display: flex; flex-direction: column; gap: 14px; color: #333; }
+.mbody ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: s; }
+.mbody li { counter-increment: s; display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: start; font-size: 15px; }
+.mbody li::before { content: counter(s); width: 32px; height: 32px; display: grid; place-items: center; background: #f1f1ef; font-family: var(--mono); font-size: 12px; }
+/* ---------- Issue popup (Pliability-style) ---------- */
+.overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); opacity: 0; transition: opacity .25s; }
+.overlay.show { opacity: 1; }
+.ipop { position: relative; width: min(1270px, 100%); max-height: 100%; overflow: auto; background: #000; color: #fff; border-radius: 40px; box-shadow: 0 40px 120px rgba(0,0,0,.6); transform: translateY(24px) scale(.98); transition: transform .3s; scrollbar-width: thin; scrollbar-color: #444 #000; }
+.overlay.show .ipop { transform: none; }
+.ipop .top { position: relative; padding: clamp(40px, 6vw, 76px) clamp(24px, 6vw, 76px) 36px; overflow: hidden; }
+.ipop .top .cover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+.ipop .top::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,.55) 45%, #000 100%); }
+.ipop .top > * { position: relative; z-index: 1; }
+.ipop .close { position: absolute; top: 22px; right: 22px; z-index: 3; width: 44px; height: 44px; border-radius: 50%; background: rgba(40,40,40,.85); display: grid; place-items: center; }
+.ipop .close:hover { background: #333; }
+.ipop .kicker { font-family: var(--ui); letter-spacing: .28em; font-size: 15px; text-transform: uppercase; margin-top: 18px; }
+.ipop .mark { width: 56px; height: 56px; transform: scaleX(-1); filter: brightness(0) invert(1); }
+.ipop h2 { font-family: var(--display); font-weight: 500; font-size: clamp(32px, 4.2vw, 52px); line-height: 1.08; letter-spacing: -0.02em; margin-top: 18px; max-width: 900px; }
+.ipop .lede { color: #d6d6d6; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.6; max-width: 1100px; margin-top: 26px; }
+.ipop .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 8px clamp(24px, 6vw, 76px) 40px; }
+.ipop .cols h4 { font-size: 15px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #bdbdbd; margin: 0 0 16px; }
+.ipop .cols ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.ipop .cols a { display: flex; gap: 14px; align-items: flex-start; font-size: 17px; line-height: 1.35; }
+.ipop .cols a:hover span { text-decoration: underline; }
+.ipop .cols a small { display: block; color: #9a9a9a; font-size: 13px; margin-top: 2px; }
+.ipop .cols svg { flex: none; width: 26px; height: 26px; margin-top: 1px; }
+.ipop .trust { text-align: center; padding: 20px clamp(24px, 6vw, 76px) 36px; }
+.ipop .badge { display: inline-block; border: 1px solid #3a3a3a; background: #111; border-radius: 999px; padding: 8px 20px; font-size: 15px; }
+.ipop .big { font-family: var(--display); font-weight: 500; font-size: clamp(30px, 4.4vw, 56px); line-height: 1.12; letter-spacing: -0.02em; margin-top: 18px; color: #b9b9b9; }
+.ipop .big em { font-style: normal; color: var(--red); }
+.ipop .facts { font-family: ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .12em; font-size: 14px; color: #bdbdbd; margin-top: 20px; text-transform: uppercase; }
+.ipop .facts b { color: #fff; font-weight: 500; }
+.ipop .cta { display: block; width: min(1014px, 100%); margin: 28px auto 0; height: 76px; border-radius: 999px; background: var(--red); color: #fff; font-family: var(--body); font-weight: 500; font-size: 22px; line-height: 76px; transition: background-color .2s; }
+.ipop .cta:hover { background: var(--red-hover); }
+.ipop .pn { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #2a2a2a; }
+.ipop .pn button { display: flex; align-items: center; gap: 16px; padding: 44px clamp(24px, 6vw, 110px); font-family: var(--body); font-weight: 500; letter-spacing: .02em; font-size: 16px; transition: background-color .2s; }
+.ipop .pn button:hover { background: #0e0e0e; }
+.ipop .pn button + button { justify-content: flex-end; border-left: 1px solid #2a2a2a; }
+.ipop .pn svg { width: 26px; height: 26px; flex: none; }
+@media (max-width: 720px) { .ipop { border-radius: 24px; } .ipop .cols { grid-template-columns: 1fr; } .ipop .pn button { letter-spacing: .14em; font-size: 12px; padding: 28px 16px; } .ipop .cta { height: 60px; line-height: 60px; font-size: 18px; } }
+
+/* ---------- Sign-in (NYT-style) ---------- */
+.auth { position: fixed; inset: 0; z-index: 110; background: #fff; color: #121212; overflow: auto; opacity: 0; transition: opacity .2s; }
+.auth.show { opacity: 1; }
+.auth .bar { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #e2e2e2; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+.auth .bar .lockup { display: flex; align-items: center; gap: 8px; }
+.auth .bar .lockup img:first-child { width: 34px; height: 34px; transform: scaleX(-1); }
+.auth .bar .lockup img:last-child { width: 80px; }
+.auth .bar .back { justify-self: start; font-size: 14px; font-weight: 500; color: var(--ink); }
+.auth .bar .back:hover { text-decoration: underline; }
+.auth .bar .x { justify-self: end; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; }
+.auth .bar .x:hover { background: #f2f2f2; }
+.auth .panel { width: min(400px, 100%); margin: 0 auto; padding: 64px max(16px, env(safe-area-inset-left, 0px)) 80px; }
+.auth h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 700; font-size: 28px; line-height: 1.2; text-align: center; letter-spacing: -0.01em; }
+.auth .ctx { text-align: center; color: #5a5a5a; font-size: 15px; margin-top: 10px; }
+.auth label { display: block; font-size: 15px; font-weight: 600; margin: 28px 0 8px; }
+.auth input[type=email], .auth input[type=password], .auth input[type=text], .auth select { width: 100%; height: 52px; border: 1px solid #c7c7c7; border-radius: 10px; padding: 0 12px; font: inherit; font-size: 16px; color: #121212; background: #fff; }
+.auth input:focus, .auth select:focus { outline: none; border-color: #121212; box-shadow: 0 0 0 1px #121212; }
+.auth .err { color: #d0021b; font-size: 13px; margin-top: 6px; min-height: 18px; }
+.auth .primary { width: 100%; height: 52px; border-radius: 999px; background: var(--red-btn); color: #fff; font-family: var(--body); font-weight: 500; font-size: 16px; margin-top: 18px; transition: background-color .2s; }
+.auth .primary:hover { background: var(--red-hover); }
+.auth .or { display: flex; align-items: center; gap: 12px; color: #727272; font-size: 13px; margin: 28px 0; }
+.auth .or::before, .auth .or::after { content: ""; flex: 1; height: 1px; background: #e2e2e2; }
+.auth .sso { width: 100%; height: 52px; border: 1px solid #121212; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--body); font-weight: 500; font-size: 16px; margin-bottom: 12px; transition: background-color .2s; }
+.auth .sso:hover { background: #f7f7f7; }
+.auth .sso svg { width: 18px; height: 18px; }
+.auth .fine { font-size: 12px; color: #5a5a5a; text-align: center; margin-top: 22px; line-height: 1.6; }
+.auth .fine a { text-decoration: underline; }
+.auth .emailchip { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid #e2e2e2; border-radius: 3px; margin-top: 24px; font-size: 15px; }
+.auth .emailchip button { color: #326891; font-size: 14px; }
+.auth .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.auth .row2 label { margin-top: 20px; }
+.auth .check { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #333; margin-top: 18px; font-weight: 400; }
+.auth .check input { margin-top: 3px; }
+.auth .done-ico { width: 56px; height: 56px; border-radius: 50%; background: #e7f6ee; display: grid; place-items: center; margin: 0 auto 20px; }
+.auth .types { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+.auth .types label { display: flex; gap: 12px; align-items: flex-start; border: 1px solid #d9d9d9; border-radius: 6px; padding: 14px; margin: 0; font-weight: 400; cursor: pointer; transition: border-color .2s; }
+.auth .types label:hover { border-color: #121212; }
+.auth .types input { margin-top: 4px; }
+.auth .types b { display: block; font-size: 15px; }
+.auth .types small { color: #5a5a5a; font-size: 13px; }
+.auth .proto { margin-top: 26px; padding: 12px 14px; background: #f6f6f2; border-radius: 6px; font-size: 13px; color: #555; text-align: center; }
+.auth .step[hidden] { display: none !important; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 20px); background: #111; color: #fff; padding: 12px 18px; border-radius: 999px; font-size: 14px; opacity: 0; transition: opacity .25s, transform .25s; z-index: 200; pointer-events: none; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+/* Square corners for the shared layers, to match the frame */
+.ipop, .ipop .close, .ipop .badge, .ipop .cta, .auth .primary, .auth .sso, .auth input[type=email], .auth input[type=password], .auth input[type=text], .auth .types label, .auth .emailchip, .auth .proto, .toast { border-radius: 0 !important; }
+.ipop .cta { background: var(--red-btn); }
+.ipop .cta:hover, .auth .primary:hover { background: var(--red-hover); }
+.auth .primary { background: var(--red-btn); }
+</style>
+</head>
+<body>
+<header class="site-header" id="top">
+  <div class="hdr">
+    <a class="brand" href="#top" aria-label="Visible Language home">
+      <img class="mark" src="assets/vl-logo.png" alt="">
+      <img class="word" src="assets/wordmark.svg" alt="Visible Language">
+    </a>
+    <nav class="menu" id="menu" aria-label="Main">
+      <div class="menu-item">
+        <button class="menu-btn" aria-expanded="false" aria-haspopup="true">Explore Issues <img src="assets/chevron-down.svg" width="16" height="16" alt=""></button>
+        <div class="dropdown">
+          <a href="#" data-issue="0">Current issue<small>Vol. 60 No. 2 · July 2026</small></a>
+          <a href="#archives">Archive<small>Every issue since 1967</small></a>
+          <a href="#" data-issue="2">Yearbook</a>
+          <a href="https://journals.uc.edu/index.php/vl/announcement" target="_blank" rel="noopener">Announcements</a>
+        </div>
+      </div>
+      <div class="menu-item">
+        <button class="menu-btn" aria-expanded="false" aria-haspopup="true">About Journal <img src="assets/chevron-down.svg" width="16" height="16" alt=""></button>
+        <div class="dropdown">
+          <a href="https://journals.uc.edu/index.php/vl/about" target="_blank" rel="noopener">About the Journal</a>
+          <a href="https://journals.uc.edu/index.php/vl/editorial-board" target="_blank" rel="noopener">Editorial Board</a>
+          <a href="https://journals.uc.edu/index.php/vl/advisory-board" target="_blank" rel="noopener">Advisory Board</a>
+          <a href="https://journals.uc.edu/index.php/vl/reviewers" target="_blank" rel="noopener">Reviewers</a>
+          <a href="https://journals.uc.edu/index.php/vl/about/contact" target="_blank" rel="noopener">Contact</a>
+        </div>
+      </div>
+      <div class="menu-item">
+        <button class="menu-btn" aria-expanded="false" aria-haspopup="true">Publish with us <img src="assets/chevron-down.svg" width="16" height="16" alt=""></button>
+        <div class="dropdown">
+          <a href="#" data-auth="submit">Submit a manuscript<small>Log in or create an account</small></a>
+          <a href="#" data-call>Call for papers<small>Special issue, early 2027</small></a>
+          <a href="https://journals.uc.edu/index.php/vl/about/submissions" target="_blank" rel="noopener">Author guidelines</a>
+          <a href="https://journals.uc.edu/index.php/vl/peer-review-process" target="_blank" rel="noopener">Peer-review process</a>
+          <a href="https://journals.uc.edu/index.php/vl/publication-ethics" target="_blank" rel="noopener">Publication ethics</a>
+        </div>
+      </div>
+    </nav>
+    <div class="actions">
+      <button class="login" data-auth="login">Log in</button>
+      <button class="cta-ink" data-call>Read the call</button>
+      <button class="search-btn" id="searchBtn" aria-label="Search" aria-expanded="false"><img src="assets/search-square.svg" width="51" height="52" alt=""></button>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+    </div>
+  </div>
+  <div class="searchbar" id="searchbar">
+    <div class="frame">
+      <form id="searchForm" role="search">
+        <label class="sr-only" for="q">Search Visible Language</label>
+        <input id="q" type="search" placeholder="Search 60 years of articles, authors and issues">
+        <button class="btn btn-red" type="submit">Search</button>
+      </form>
+      <p class="search-note">Opens the journal’s search on journals.uc.edu.</p>
+    </div>
+  </div>
+</header>
+
+<section class="hero" aria-labelledby="heroH">
+  <div class="body">
+    <div class="copy">
+      <p class="eyebrow">Published continuously since 1967</p>
+      <h1 id="heroH">The journal of interface, experience, and communication design research</h1>
+      <p class="sub">Latest Issue: <span class="nowrap">July 2026</span> is now available</p>
+    </div>
+    <div class="row">
+      <button class="btn btn-red" data-issue="0">Read issue</button>
+      <a class="btn btn-ghost" href="#archives">Explore Archives <span class="ar">→</span></a>
+    </div>
+  </div>
+  <div class="pubby">
+    <p>Published by the VL Consortium</p>
+    <div class="logos">
+      <a href="https://www.uc.edu" target="_blank" rel="noopener" aria-label="University of Cincinnati"><img src="assets/logo-uc.png" alt="University of Cincinnati"></a>
+      <a href="https://www.leeds.ac.uk" target="_blank" rel="noopener" aria-label="University of Leeds"><img src="assets/logo-leeds.png" alt="University of Leeds"></a>
+      <a href="https://www.ncsu.edu" target="_blank" rel="noopener" aria-label="NC State University"><img src="assets/logo-ncstate.png" alt="NC State University"></a>
+    </div>
+  </div>
+</section>
+
+<section class="latest" id="latest" aria-labelledby="latestH" aria-roledescription="carousel">
+  <div class="lhead">
+    <p class="kick">Issue 60.2 <b>•</b> July 2026</p>
+    <h2 id="latestH">Latest Articles</h2>
+  </div>
+  <div class="ltrack" id="lTrack">
+    <button class="lcard" style="--tint:#edf7fb" data-article="8970">
+      <div class="pic"><span class="tag">JULY 2026</span><img src="assets/lead-editorial.png" alt="" style="width:312px;height:312px;object-fit:cover"></div>
+      <div class="txt"><span class="chip">Editorial</span><h3>The Chocolate and Oyster Flavored Donut Hole of Unoriginality</h3><p class="au">Matthew Peterson</p><span class="more">READ THE ISSUE <img src="assets/chevron-grey-figma.svg" width="16" height="16" alt=""></span></div>
+    </button>
+    <button class="lcard" style="--tint:#f1f1eb" data-article="8920">
+      <div class="pic"><span class="tag">JULY 2026</span><img src="assets/thumb-letterforms.jpg" alt="" style="width:285px;height:279px;object-fit:cover"></div>
+      <div class="txt"><span class="chip">Research article</span><h3>Illustrated letterforms: a taxonomy of graphemic construction</h3><p class="au">Hugo Maciel</p><span class="more">READ THE ISSUE <img src="assets/chevron-grey-figma.svg" width="16" height="16" alt=""></span></div>
+    </button>
+    <button class="lcard" style="--tint:#edf7fb" data-toast="Sponsored placement (placeholder in this proposal)">
+      <div class="pic"><span class="tag">JULY 2026</span><img src="assets/thumb-sponsored.jpg" alt="" style="width:312px;height:251px;object-fit:cover;object-position:right center"></div>
+      <div class="txt"><span class="chip" style="font-size:10px">Sponsored Article</span><h3>Bringing a humanitarian lens to the future of AI</h3><p class="au">Microsoft</p><span class="more">READ THE ISSUE <img src="assets/chevron-grey-figma.svg" width="16" height="16" alt=""></span></div>
+    </button>
+    <button class="lcard" style="--tint:#fcfbe7" data-article="8897">
+      <div class="pic"><span class="tag">JULY 2026</span><img src="assets/thumb-gender.jpg" alt="" style="width:356px;height:251px;object-fit:cover;border-radius:4px"></div>
+      <div class="txt"><span class="chip">Research article</span><h3>Graphic Neutralization and Gender Stereotypes in Early Childhood: How Visual Variables Shape Children’s Interpretations</h3><p class="au">Laura Sisti, Luciano Perondi</p><span class="more">READ THE ISSUE <img src="assets/chevron-grey-figma.svg" width="16" height="16" alt=""></span></div>
+    </button>
+    <button class="lcard" style="--tint:#fff" data-article="8877">
+      <div class="pic"><span class="tag">JULY 2026</span><img src="assets/thumb-genai.jpg" alt="" style="width:200px;height:284px;object-fit:cover"></div>
+      <div class="txt"><span class="chip">Research article</span><h3>Are You Sure? Exploring the Challenges and Opportunities of Using Generative AI in Communication Design Projects</h3><p class="au">Halldór Björn Halldórsson</p><span class="more">READ THE ISSUE <img src="assets/chevron-grey-figma.svg" width="16" height="16" alt=""></span></div>
+    </button>
+    <button class="lcard" style="--tint:#fff" data-article="8971">
+      <div class="pic"><span class="tag">JULY 2026</span><span style="display:grid;place-items:center;width:343px;height:283px;background:#fff;border-radius:12px;box-shadow:0 0 0 1px #eee"><img src="assets/thumb-llm.jpg" alt="" style="width:337px;height:226px;object-fit:cover"></span></div>
+      <div class="txt"><span class="chip">Invited Article</span><h3>The Concept of a Large Language Model: Misconceptions About and Beneficial Conceptualizations of LLM Technology</h3><p class="au">Matthew Peterson et al.</p><span class="more">READ THE ISSUE <img src="assets/chevron-grey-figma.svg" width="16" height="16" alt=""></span></div>
+    </button>
+  </div>
+  <div class="lnav">
+    <button class="sq" id="lPrev" aria-label="Previous article">←</button>
+    <span class="lcount" id="lCount" aria-live="polite">1 / 6</span>
+    <button class="sq" id="lNext" aria-label="Next article">→</button>
+  </div>
+</section>
+
+<section class="feat" aria-labelledby="featH">
+  <div class="frame">
+    <div class="shead">
+      <h2 id="featH">Featured Articles.</h2>
+      <a class="tlink" href="https://journals.uc.edu/index.php/vl/issue/archive" target="_blank" rel="noopener">View all <img src="assets/arrow-red.svg" width="16" height="16" alt=""></a>
+    </div>
+    <div class="ftop">
+      <div class="free">
+        <div class="frow">
+          <div class="fcol">
+            <div class="story lead" data-article="8866" tabindex="0" role="button">
+              <p class="lab">Research article · April 2026</p>
+              <h3>The Terminological Development of Graphic Design: Between Office Art and Social Purpose</h3>
+              <p class="d">Challenges single-origin accounts of the term “graphic design” through W. G. Raffé’s neglected 1927 handbook.</p>
+              <p class="m">David Preston · pp. 1–23</p>
+            </div>
+            <div class="rule"></div>
+            <div class="story" data-article="8924" tabindex="0" role="button">
+              <h3>Metafont, Metamathematics, and Metaphysics</h3>
+              <p class="m">Reprint · Douglas R. Hofstadter</p>
+            </div>
+          </div>
+          <div class="fig poster" data-article="8866" tabindex="0" role="button" aria-label="Open The Terminological Development of Graphic Design"><img src="assets/featured-poster.png" alt=""><span class="cap">Raffé, Graphic Design, 1927</span></div>
+        </div>
+        <div class="rule"></div>
+        <div class="frow">
+          <div class="fcol">
+            <div class="story" data-article="8868" tabindex="0" role="button">
+              <h3>Automation and Artificial Intelligence in the Type Design Process</h3>
+              <p class="d">An industry survey shows how automation is entering a craft with exacting standards.</p>
+              <p class="m">Alice Savoie et al. · pp. 24–57</p>
+            </div>
+            <div class="rule"></div>
+            <div class="story" data-article="8818" tabindex="0" role="button">
+              <h3>Evaluating Interactive Highlighting Techniques in Digital Reading</h3>
+              <p class="d">Does highlighting the line, sentence or paragraph you are reading help?</p>
+              <p class="m">Szabolcs Vatány et al. · pp. 58–83</p>
+            </div>
+          </div>
+          <div class="fig type" data-article="8868" tabindex="0" role="button" aria-label="Open Automation and Artificial Intelligence in the Type Design Process"><img src="assets/featured-type.png" alt=""><span class="cap">Type design in practice</span></div>
+        </div>
+      </div>
+      <aside class="edcol" aria-labelledby="edH">
+        <div class="lbl"><a id="edH" href="https://journals.uc.edu/index.php/vl/issue/archive" target="_blank" rel="noopener">Editorials ›</a>
+          <span class="edsw"><button id="edPrev" aria-label="Previous editorials" disabled>←</button><button id="edNext" aria-label="More editorials">→</button></span></div>
+        <div class="edlist edpage on" data-page="0">
+          <div class="ed" data-article="8923" tabindex="0" role="button"><b>Why Meta-Font Struck a Nerve</b><small>Mike Zender</small></div>
+          <div class="ed" data-article="8925" tabindex="0" role="button"><b>A Profession Provoked: How Meta-Font Struck a Nerve</b><small>Deborah Littlejohn</small></div>
+          <div class="ed" data-article="8928" tabindex="0" role="button"><b>Word | Image | Space | Materiality | Experience</b><small>Jeanne-Louise Moys</small></div>
+          <div class="ed" data-article="8931" tabindex="0" role="button"><b>Recent Trends in Academic Publishing: Open Access, Predatory Publishers and Plagiarism</b><small>Matthew Peterson</small></div>
+          <div class="ed" data-article="8932" tabindex="0" role="button"><b>The Disciplinary Status of Visual Communication or Graphic Design</b><small>Deborah Littlejohn</small></div>
+        </div>
+        <div class="edlist edpage" data-page="1">
+          <div class="ed" data-article="8970" tabindex="0" role="button"><b>The Chocolate and Oyster Flavored Donut Hole of Unoriginality</b><small>Matthew Peterson</small></div>
+          <div class="ed" data-article="8922" tabindex="0" role="button"><b>The Editors Introduce the April 2026 Issue</b><small>Jeanne-Louise Moys, Mike Zender, Matthew Peterson</small></div>
+          <div class="ed" data-article="8929" tabindex="0" role="button"><b>Professor James Mosley, a Memoir</b><small>Eric Kindel</small></div>
+          <div class="ed" data-article="8930" tabindex="0" role="button"><b>Professor Michael Twyman</b><small>Sue Walker</small></div>
+        </div>
+        <div class="rule-ink"></div>
+        <div class="story big" data-article="8855" tabindex="0" role="button">
+          <p class="lab">Student research · December 2025</p>
+          <h3>Beyond (Type)Face Value: What Makes Typography Legible and Readable</h3>
+          <p class="d">Reading is how we find, understand and use information, which makes typography essential to accessibility. A systematic review of the evidence.</p>
+          <p class="m">Brian Ho Sang, Diana Petrarca · pp. 262–294</p>
+        </div>
+      </aside>
+    </div>
+    <div class="yb">
+      <div class="gp" data-gp></div>
+      <h2>Yearbook 2026</h2>
+      <p>A special print edition, available to order.</p>
+      <div class="row">
+        <a class="btn btn-red" href="https://www.visible-language.org/journal/yearbook-2026/" target="_blank" rel="noopener">Order Now</a>
+        <button class="btn btn-ghost on-dark" data-issue="2">Preview <img src="assets/chevron-white.svg" width="13" height="13" alt="" style="transform:rotate(-90deg)"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="archives" id="archives" aria-labelledby="arcH">
+  <div class="frame">
+    <div class="shead" style="margin-bottom:44px">
+      <h2 id="arcH">Explore Archives</h2>
+      <a class="tlink" href="https://journals.uc.edu/index.php/vl/issue/archive" target="_blank" rel="noopener">View all <img src="assets/arrow-red.svg" width="16" height="16" alt=""></a>
+    </div>
+    <div class="covers" id="covers"></div>
+  </div>
+</section>
+
+<section class="cfp" aria-labelledby="cfpH">
+  <div class="frame">
+    <div class="cfpbox">
+      <img src="assets/eye-pattern.jpg" alt="">
+      <p class="k">Call for Papers · Special Issue, Early 2027</p>
+      <h2 id="cfpH">Typographic Landscapes: Migrating Types and Meaning-Making Across Boundaries</h2>
+      <div class="row">
+        <button class="btn btn-red" data-call>Read details</button>
+        <button class="btn btn-ghost on-dark" data-auth="submit">Submit article</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="disp" aria-labelledby="dispH">
+  <div class="frame">
+    <h2 id="dispH">Dispatches from industry.</h2>
+    <div class="dcards">
+      <a class="dcard" href="https://www.visible-language.org/journal/dispatches-from-industry/" target="_blank" rel="noopener">
+        <div class="img"><img src="assets/dispatch-1.jpg" alt=""></div>
+        <h3>The Human Touch(point): Recommendations for Thoughtful AI Feature Design</h3><p>Sierra Shell</p>
+      </a>
+      <a class="dcard" href="https://www.visible-language.org/journal/dispatches-from-industry/" target="_blank" rel="noopener">
+        <div class="img"><img src="assets/dispatch-2.jpg" alt=""></div>
+        <h3>The Changing Definition of Designers in the Age of Generative AI</h3><p>Will Hall</p>
+      </a>
+      <a class="dcard" href="https://www.visible-language.org/journal/dispatches-from-industry/" target="_blank" rel="noopener">
+        <div class="img"><img src="assets/dispatch-3.jpg" alt="" style="object-position: 30% 20%"></div>
+        <h3>A Seat at the Table: Designing for AI with Strategy, Vision, and Collaboration</h3><p>Syashi Gupta</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="contact" aria-label="Publish with Visible Language">
+  <div class="frame">
+    <div class="ccards">
+      <div class="ccard"><div><h3>Submit your research.</h3><p>Research articles, visual essays, dispatches from industry, book reviews and invited articles. No article charges.</p></div><a class="tlink" href="https://journals.uc.edu/index.php/vl/about/submissions" target="_blank" rel="noopener">Author guidelines <img src="assets/arrow-red.svg" width="16" height="16" alt=""></a></div>
+      <div class="ccard"><div><h3>Double-blind peer review.</h3><p>Every manuscript is screened by the Editorial Board, then reviewed by at least two experts in the field.</p></div><a class="tlink" href="https://journals.uc.edu/index.php/vl/peer-review-process" target="_blank" rel="noopener">Peer-review process <img src="assets/arrow-red.svg" width="16" height="16" alt=""></a></div>
+      <div class="ccard"><div><h3>Publication &amp; Ethics</h3><p>Committed to ethical, accessible publishing through a diamond open-access model, with no fees for readers or authors.</p></div><a class="tlink" href="https://journals.uc.edu/index.php/vl/publication-ethics" target="_blank" rel="noopener">Find out more <img src="assets/arrow-red.svg" width="16" height="16" alt=""></a></div>
+    </div>
+  </div>
+  <div class="subwrap">
+    <h2 id="subH">Subscribe for latest announcement and updates</h2>
+    <p>New issues, calls for papers and special issues, straight to your inbox.</p>
+    <form class="subform" id="subForm" novalidate>
+      <label class="sr-only" for="subEmail">Email address</label>
+      <input id="subEmail" type="email" placeholder="Enter your email" autocomplete="email">
+      <button type="submit">Subscribe</button>
+    </form>
+    <p class="form-msg" id="subMsg" role="status"></p>
+  </div>
+  <div class="gp" data-gp></div>
+</section>
+
+<footer class="footer">
+  <div class="frame">
+    <div class="fnav">
+      <div><h3>Explore</h3><ul>
+        <li><a href="#" data-issue="0">Latest Issue</a></li>
+        <li><a href="#archives">Archive</a></li>
+        <li><a href="#" data-issue="2">Yearbook</a></li>
+        <li><a href="#" data-toast="News page not built yet">News</a></li>
+        <li><a href="https://journals.uc.edu/index.php/vl/announcement" target="_blank" rel="noopener">Announcements</a></li>
+      </ul></div>
+      <div><h3>Company</h3><ul>
+        <li><a href="https://journals.uc.edu/index.php/vl/about" target="_blank" rel="noopener">About</a></li>
+        <li><a href="#" data-toast="FAQs page not built yet">FAQs</a></li>
+        <li><a href="https://journals.uc.edu/index.php/vl/about/contact" target="_blank" rel="noopener">Contact Us</a></li>
+        <li><a href="https://journals.uc.edu/index.php/vl/publication-ethics" target="_blank" rel="noopener">Standards &amp; Ethics</a></li>
+        <li><a href="#" data-toast="Advertise page not built yet">Advertise</a></li>
+      </ul></div>
+      <div><h3>More</h3><ul>
+        <li><a href="#" data-toast="Accessibility page not built yet">Accessibility</a></li>
+        <li><a href="#" data-toast="Terms page not built yet">Terms of Use</a></li>
+        <li><a href="https://journals.uc.edu/index.php/vl/about/privacy" target="_blank" rel="noopener">Privacy Policy</a></li>
+        <li><a href="#" data-toast="Cookie settings not built yet">Use of cookies/Do not sell my data</a></li>
+        <li><a href="https://journals.uc.edu/index.php/vl/copyright-and-access" target="_blank" rel="noopener">Copyright and access</a></li>
+      </ul></div>
+    </div>
+    <div class="divider"></div>
+    <p class="legal">Copyright 2026 © Visible Language Journal. All rights reserved, Visible Language Consortium (University of Cincinnati, University of Leeds, North Carolina State University). No portions of this website, nor its contents, may be reproduced, disseminated, saved, downloaded, and/or transmitted in any form or matter, via physical or digital means, without the express written permission of its owners. Assets used on this site, including but not limited to content platforms, payment gateways, fonts and typefaces, and images, are protected by copyright laws and other laws. This site uses third-party services for full site functionality. We do not warrant, nor represent, nor endorse any third-party services that may be used with this site, and we do not assume any liability whatsoever for their performance on or off this site. Add-ons may depend on region. Use of this site is governed by the terms and conditions.</p>
+    <div class="fbottom">
+      <p>© Visible Language Consortium 2026  ·  ISSN 0022-2224</p>
+      <div class="social">
+        <a href="#" data-toast="Facebook link placeholder" aria-label="Facebook"><img src="assets/facebook.svg" width="16" height="22" alt=""></a>
+        <a href="#" data-toast="Instagram link placeholder" aria-label="Instagram"><img src="assets/instagram.svg" width="20" height="20" alt=""></a>
+        <a href="#" data-toast="LinkedIn link placeholder" aria-label="LinkedIn"><span class="li">in</span></a>
+        <a href="#" data-toast="TikTok link placeholder" aria-label="TikTok"><img src="assets/tiktok.svg" width="21" height="22" alt=""></a>
+        <a href="#" data-toast="YouTube link placeholder" aria-label="YouTube"><img src="assets/youtube.svg" width="22" height="18" alt=""></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Article drawer -->
+<div class="drawer" id="drawer" hidden>
+  <div class="dpanel" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+    <div class="dbar"><span id="dIssue"></span><button class="xbtn" id="dClose" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="dbody">
+      <p class="lab" id="dType"></p>
+      <h2 id="dTitle"></h2>
+      <p class="au" id="dAuthors"></p>
+      <p class="facts" id="dFacts"></p>
+      <p class="sum" id="dSum"></p>
+      <div class="dacts">
+        <a class="btn btn-red" id="dRead" href="#" target="_blank" rel="noopener">Read article</a>
+        <button class="btn btn-out" id="dCopy">Copy link</button>
+        <button class="btn btn-ghost" id="dSave">Save for later</button>
+      </div>
+      <p class="note">Opens the article on journals.uc.edu. Saving is simulated in this prototype.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Call for papers modal -->
+<div class="modal" id="callModal" hidden>
+  <div class="mbox" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+    <button class="xbtn" id="cClose" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="mtop"><img src="assets/eye-pattern.jpg" alt=""><p class="k">Call for Papers · Special Issue, Early 2027</p><h2 id="cTitle">Typographic Landscapes: Migrating Types and Meaning-Making Across Boundaries</h2></div>
+    <div class="mbody">
+      <p>Visible Language invites research on how typography travels across languages, scripts, cultures and borders, and how meaning is made along the way.</p>
+      <ol>
+        <li>Read the full call and author guidelines.</li>
+        <li>Log in or create an account.</li>
+        <li>Submit your manuscript for double-blind peer review.</li>
+      </ol>
+      <div class="dacts">
+        <button class="btn btn-red" data-auth="submit">Submit article</button>
+        <a class="btn btn-out" href="https://journals.uc.edu/index.php/vl/announcement" target="_blank" rel="noopener">Full announcement</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Issue popup -->
+<div class="overlay" id="issueOverlay" hidden>
+  <div class="ipop" role="dialog" aria-modal="true" aria-labelledby="ipTitle">
+    <button class="close" id="ipClose" aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="top">
+      <img class="cover" id="ipCover" src="" alt="">
+      <img class="mark" src="assets/vl-logo.png" alt="">
+      <p class="kicker" id="ipKicker"></p>
+      <h2 id="ipTitle"></h2>
+      <p class="lede" id="ipLede"></p>
+    </div>
+    <div class="cols">
+      <div><h4 id="ipColA">Research</h4><ul id="ipListA"></ul></div>
+      <div><h4 id="ipColB">Editorials &amp; invited</h4><ul id="ipListB"></ul></div>
+    </div>
+    <div class="trust">
+      <span class="badge">Peer reviewed · Diamond open access</span>
+      <p class="big">Join researchers worldwide<br>already reading <em>Visible Language.</em></p>
+      <p class="facts" id="ipFacts"></p>
+      <a class="cta" id="ipCta" href="#" target="_blank" rel="noopener">Read the full issue</a>
+    </div>
+    <div class="pn">
+      <button id="ipPrev"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 6l-6 6 6 6"/></svg><span id="ipPrevName"></span></button>
+      <button id="ipNext"><span id="ipNextName"></span><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M14 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<!-- Sign-in / submit -->
+<div class="auth" id="auth" role="dialog" aria-modal="true" aria-labelledby="authTitle" hidden>
+  <div class="bar">
+    <button class="back" id="authBack" hidden>← Back</button>
+    <span class="lockup" style="grid-column: 2"><img src="assets/vl-logo.png" alt=""><img src="assets/wordmark.svg" alt="Visible Language"></span>
+    <button class="x" id="authClose" aria-label="Close" style="grid-column: 3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#121212" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="panel">
+    <!-- Step 1 -->
+    <form class="step" id="stepEmail" novalidate>
+      <h2 id="authTitle">Log in or create an account</h2>
+      <p class="ctx" id="authCtx">Submit your research to Visible Language.</p>
+      <label for="authEmail">Email address</label>
+      <input id="authEmail" type="email" autocomplete="email" placeholder="you@university.edu">
+      <p class="err" id="emailErr"></p>
+      <button class="primary" type="submit">Continue</button>
+      <div class="or">or</div>
+      <button class="sso" type="button" data-sso="ORCID"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#A6CE39"/><path fill="#fff" d="M8.3 17.3H6.8V7.4h1.5v9.9zm2.2-9.9h4c3.8 0 5.5 2.7 5.5 5 0 2.5-2 5-5.5 5h-4v-10zm1.5 8.6h2.4c3.4 0 4.2-2.6 4.2-3.7 0-1.8-1.1-3.6-4.2-3.6H12v7.3zM7.5 4.4a1 1 0 110 2 1 1 0 010-2z"/></svg>Continue with ORCID</button>
+      <button class="sso" type="button" data-sso="Google"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5c-.3 1.5-1.1 2.7-2.4 3.5v2.9h3.9c2.2-2.1 3.5-5.1 3.5-8.5z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-2.9c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.6-4.9h-4v3C3.4 21.4 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.4 14.5c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3v-3h-4C.5 8.6 0 10.3 0 12.2s.5 3.6 1.3 5.3l4.1-3z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.4 0 3.4 2.6 1.4 6.5l4 3.1c.9-2.8 3.5-4.8 6.6-4.8z"/></svg>Continue with Google</button>
+      <button class="sso" type="button" data-sso="Apple"><svg viewBox="0 0 24 24"><path fill="#121212" d="M16.4 12.7c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>Continue with Apple</button>
+      <p class="fine">By continuing, you agree to the <a href="https://journals.uc.edu/index.php/vl/publication-ethics" target="_blank" rel="noopener">publication ethics</a> and acknowledge the <a href="https://journals.uc.edu/index.php/vl/about/privacy" target="_blank" rel="noopener">Privacy Statement</a>.</p>
+      <p class="proto">Prototype: nothing you type here is saved or sent.</p>
+    </form>
+    <!-- Step 2 -->
+    <form class="step" id="stepCreate" novalidate hidden>
+      <h2>Create your free account</h2>
+      <p class="ctx">One account to submit, review and follow your manuscripts.</p>
+      <div class="emailchip"><span id="chipEmail"></span><button type="button" id="editEmail">Edit</button></div>
+      <div class="row2">
+        <div><label for="given">Given name</label><input id="given" type="text" autocomplete="given-name"></div>
+        <div><label for="family">Family name</label><input id="family" type="text" autocomplete="family-name"></div>
+      </div>
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+      <p class="err" id="createErr"></p>
+      <label class="check"><input type="checkbox" id="notify" checked> Email me about new issues and calls for papers.</label>
+      <button class="primary" type="submit">Create account</button>
+      <p class="fine">Already have an account? <a href="#" id="toLogin">Log in instead</a></p>
+    </form>
+    <!-- Step 2b: log in -->
+    <form class="step" id="stepLogin" novalidate hidden>
+      <h2>Welcome back</h2>
+      <div class="emailchip"><span id="chipEmail2"></span><button type="button" id="editEmail2">Edit</button></div>
+      <label for="pw2">Password</label>
+      <input id="pw2" type="password" autocomplete="current-password">
+      <p class="err" id="loginErr"></p>
+      <button class="primary" type="submit">Log in</button>
+      <p class="fine"><a href="#" data-toast="Password reset is not part of this prototype">Forgot your password?</a></p>
+    </form>
+    <!-- Step 3 -->
+    <form class="step" id="stepSubmit" novalidate hidden>
+      <div class="done-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#11a26a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2 id="doneTitle">You’re signed in</h2>
+      <p class="ctx">Choose what you’d like to submit.</p>
+      <div class="types" role="radiogroup" aria-label="Submission type">
+        <label><input type="radio" name="stype" value="Research article" checked><span><b>Research article</b><small>Original, peer-reviewed research</small></span></label>
+        <label><input type="radio" name="stype" value="Visual essay"><span><b>Visual essay</b><small>An argument made through images and text</small></span></label>
+        <label><input type="radio" name="stype" value="Dispatch from industry"><span><b>Dispatch from industry</b><small>Insight from practice</small></span></label>
+        <label><input type="radio" name="stype" value="Book review"><span><b>Book review</b><small>A critical review of a recent book</small></span></label>
+      </div>
+      <button class="primary" type="submit">Start submission</button>
+      <p class="fine">On the live site this opens the journal’s submission form on journals.uc.edu.</p>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script>
+(function () {
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Toast */
+  const toastEl = $('#toast'); let toastT;
+  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 2400); }
+  document.addEventListener('click', e => { const t = e.target.closest('[data-toast]'); if (t) { e.preventDefault(); toast(t.dataset.toast); } });
+
+  /* Header: shrink on scroll */
+  const header = $('.site-header');
+  addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 10), { passive: true });
+
+  /* Dropdowns */
+  const items = $$('.menu-item');
+  function closeMenus(except) { items.forEach(i => { if (i !== except) { i.classList.remove('open'); $('.menu-btn', i).setAttribute('aria-expanded', 'false'); } }); }
+  items.forEach(item => {
+    const btn = $('.menu-btn', item);
+    btn.addEventListener('click', e => { e.stopPropagation(); const open = !item.classList.contains('open'); closeMenus(item); item.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); });
+    item.addEventListener('mouseenter', () => { if (matchMedia('(min-width: 1100px) and (hover: hover)').matches) { closeMenus(item); item.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); } });
+    item.addEventListener('mouseleave', () => { if (matchMedia('(min-width: 1100px) and (hover: hover)').matches) { item.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); } });
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.menu-item')) closeMenus(); if (!e.target.closest('.kebab')) closeKmenus(); });
+
+  /* Burger */
+  const burger = $('#burger'), menu = $('#menu');
+  burger.addEventListener('click', () => { const o = !menu.classList.contains('open'); menu.classList.toggle('open', o); burger.setAttribute('aria-expanded', String(o)); });
+
+  /* Search */
+  const sBtn = $('#searchBtn'), sBar = $('#searchbar');
+  sBtn.addEventListener('click', () => { const o = !sBar.classList.contains('open'); sBar.classList.toggle('open', o); sBtn.setAttribute('aria-expanded', String(o)); if (o) setTimeout(() => $('#q').focus(), 200); });
+  $('#searchForm').addEventListener('submit', e => { e.preventDefault(); const q = $('#q').value.trim(); if (!q) { $('#q').focus(); return; } const a = document.createElement('a'); a.href = 'https://journals.uc.edu/index.php/vl/search/search?query=' + encodeURIComponent(q); a.target = '_blank'; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove(); });
+
+  /* Latest Articles: arrows, counter, keyboard and drag */
+  const lTrack = $('#lTrack'), lPrev = $('#lPrev'), lNext = $('#lNext'), lCount = $('#lCount');
+  const lCards = [...lTrack.children];
+  const lPad = () => parseFloat(getComputedStyle(lTrack).scrollPaddingLeft || 0);
+  function lIndex() { if (lTrack.scrollLeft >= lTrack.scrollWidth - lTrack.clientWidth - 4) return lCards.length - 1; let best = 0, bd = Infinity; lCards.forEach((c, i) => { const d = Math.abs(c.offsetLeft - lPad() - lTrack.scrollLeft); if (d < bd) { bd = d; best = i; } }); return best; }
+  function lGo(i) { const c = lCards[Math.max(0, Math.min(i, lCards.length - 1))]; lTrack.scrollTo({ left: c.offsetLeft - lPad(), behavior: reduce ? 'auto' : 'smooth' }); setTimeout(lUpdate, 600); }
+  function lUpdate() { lPrev.disabled = lTrack.scrollLeft <= 4; lNext.disabled = lTrack.scrollLeft >= lTrack.scrollWidth - lTrack.clientWidth - 4; lCount.textContent = (lIndex() + 1) + ' / ' + lCards.length; }
+  lPrev.addEventListener('click', () => lGo(lIndex() - 1));
+  lNext.addEventListener('click', () => lGo(lIndex() + 1));
+  lTrack.addEventListener('scroll', lUpdate, { passive: true });
+  lTrack.addEventListener('keydown', e => { if (e.key === 'ArrowRight') { e.preventDefault(); lGo(lIndex() + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); lGo(lIndex() - 1); } });
+  addEventListener('resize', lUpdate); lUpdate();
+  // Mouse drag to scroll (touch already scrolls natively)
+  let drag = null, moved = false;
+  lTrack.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button !== 0) return; drag = { x: e.clientX, left: lTrack.scrollLeft }; moved = false; });
+  addEventListener('pointermove', e => { if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 5) { moved = true; lTrack.classList.add('dragging'); } if (moved) lTrack.scrollLeft = drag.left - dx; });
+  addEventListener('pointerup', () => { if (!drag) return; const wasMoved = moved; drag = null; lTrack.classList.remove('dragging'); if (wasMoved) { lGo(lIndex()); setTimeout(() => moved = false, 0); } });
+  lTrack.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+
+  /* Growth pattern from the frame: 7 rows, 48px apart, strokes grow and darken toward the bottom */
+  function growth() {
+    let s = '';
+    for (let r = 0; r < 7; r++) {
+      const h = 5 + 6 * r, w = 1 + 0.5 * r, o = (0.15 + 0.07 * r).toFixed(2), rot = 28 + 2 * r, cy = 42 * r + h / 2;
+      for (let x = 0; x < 31; x++) { const cx = 48 * x + 1.5; s += `<rect x="${(cx - w / 2).toFixed(2)}" y="${(cy - h / 2).toFixed(2)}" width="${w}" height="${h}" fill="#ea434d" fill-opacity="${o}" transform="rotate(${rot} ${cx} ${cy})"/>`; }
+    }
+    return `<svg viewBox="0 0 1440 292" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${s}</svg>`;
+  }
+  $$('[data-gp]').forEach(el => el.innerHTML = growth());
+
+  /* Kebab menus (none on this page; kept so shared handlers stay valid) */
+  function closeKmenus() {}
+
+  /* Issues data */
+  const A = id => 'https://journals.uc.edu/index.php/vl/article/view/' + id;
+  const ISSUES = [
+    { short: 'Issue 60.2', date: 'July 2026', img: 'assets/issue-60-2.jpg', isNew: true, kicker: 'Volume 60 · Number 2 · July 2026', title: 'Writing, illustration and design in the age of AI',
+      lede: 'Now that writing, illustrating and designing have each been at least partly automated by AI, what is value in each? The editorial asks the question, and four articles answer it from children’s picture books, illustrated letterforms, the design studio and the theory of large language models.',
+      colA: 'Research', colB: 'Editorial & invited', published: '16 Jul 2026', pages: 'iv–xxvii, 124–239', url: 'https://journals.uc.edu/index.php/vl/issue/view/634',
+      a: [['Graphic Neutralization and Gender Stereotypes in Early Childhood', 'Laura Sisti, Luciano Perondi', 8897], ['Illustrated Letterforms: A Taxonomy of Graphemic Construction', 'Hugo Maciel', 8920], ['Are You Sure? Generative AI in Communication Design Projects', 'Halldór Björn Halldórsson', 8877]],
+      b: [['The Chocolate and Oyster Flavored Donut Hole of Unoriginality', 'Matthew Peterson · Editorial', 8970], ['The Concept of a Large Language Model', 'Matthew Peterson, Colleen Patton, Michael Green, Brayan Díaz · Invited', 8971]] },
+    { short: 'Issue 60.1', date: 'April 2026', img: 'assets/issue-60-1.jpg', kicker: 'Volume 60 · Number 1 · April 2026', title: 'Type, automation and the Meta-Font debate',
+      lede: 'Where did “graphic design” come from, and how far can the design of letters be automated? This issue traces the term’s layered history, surveys AI in professional type design, tests highlighting in digital reading, and reprints Douglas Hofstadter’s response to Donald Knuth’s “The Concept of a Meta-Font” with new commentary.',
+      colA: 'Research', colB: 'Editorials', published: '26 Apr 2026', pages: 'iv–vi, 1–123', url: 'https://journals.uc.edu/index.php/vl/issue/view/632',
+      a: [['The Terminological Development of Graphic Design', 'David Preston', 8866], ['Automation and Artificial Intelligence in the Type Design Process', 'Alice Savoie, Kai Bernau, Wayne Daly, Raphaela Haefliger, Sebastian Baez Lugo', 8868], ['Evaluating Interactive Highlighting Techniques in Digital Reading', 'Szabolcs Vatány, Thi Huyen Nguyen, Illés Anikó, Ann Bessemans', 8818], ['Metafont, Metamathematics, and Metaphysics [Reprint]', 'Douglas R. Hofstadter', 8924]],
+      b: [['The Editors Introduce the April 2026 Issue', 'Jeanne-Louise Moys, Mike Zender, Matthew Peterson', 8922], ['Why Meta-Font Struck a Nerve', 'Mike Zender', 8923], ['A Profession Provoked: How Meta-Font Struck a Nerve', 'Deborah Littlejohn', 8925]] },
+    { short: 'Volume 59', date: 'Yearbook 2025', img: 'assets/issue-59-yearbook.jpg', kicker: 'Volume 59 · Yearbook 2025', title: 'The Volume 59 Yearbook',
+      lede: 'A year of Visible Language collected in one volume, with two new editorials on the state of academic publishing and on the disciplinary status of visual communication and graphic design.',
+      colA: 'Editorials', colB: 'In print', published: '2025', pages: 'vii–xxi', url: 'https://journals.uc.edu/index.php/vl/issue/view/633',
+      a: [['Recent Trends in Academic Publishing: Open Access, Predatory Publishers, Plagiarism, Citation Format, and Service to the Discipline', 'Matthew Peterson', 8931], ['The Disciplinary Status of Visual Communication or Graphic Design', 'Deborah Littlejohn', 8932]],
+      b: [['The full Volume 59 Yearbook', 'Every 2025 issue in one printed volume', null]] },
+    { short: 'Issue 59.3', date: 'December 2025', img: 'assets/issue-59-3.jpg', kicker: 'Volume 59 · Number 3 · December 2025', title: 'Student Research Special Issue',
+      lede: 'New research from students and early-career scholars on legibility and accessibility, bilingual design in Kuwait, the hypertangible novel, the visual rhetoric of misinformation, colonial textile tickets and augmented-reality wayfinding, with memoirs of James Mosley and Michael Twyman.',
+      colA: 'Research', colB: 'Editorial & invited', published: '23 Dec 2025', pages: 'iv–v, 262–443', url: 'https://journals.uc.edu/index.php/vl/issue/view/626',
+      a: [['Beyond (Type)Face Value: Legibility and Readability of Typography', 'Brian Ho Sang, Diana Petrarca', 8855], ['Scripts in Dialogue: Bilingual Design Workshops in Kuwait', 'Muwaffaq Abdulmajid, Faisal Alamhouj', 8839], ['Sensational Design: Typography and Information Disorder', 'Anna Talley', 8849], ['The Visual Language of Textile Tickets in 20th-Century British India', 'Ragini Siruguri', 8850]],
+      b: [['Word | Image | Space | Materiality | Experience', 'Jeanne-Louise Moys · Editorial', 8928], ['Professor James Mosley, a Memoir', 'Eric Kindel', 8929], ['Professor Michael Twyman', 'Sue Walker', 8930]] }
+  ];
+
+  /* Explore Archives cover cards */
+  const covers = $('#covers'), LABELS = ['Now', 'April 2026', 'In print', 'December 2025'], SUBS = ['July 2026', 'The Meta-Font debate', 'Yearbook 2025', 'Student research'];
+  ISSUES.forEach((iss, i) => {
+    const c = document.createElement('button'); c.className = 'cov'; c.dataset.issue = i;
+    c.setAttribute('aria-label', 'Open ' + iss.short + ', ' + SUBS[i]);
+    c.innerHTML = `<div class="img"><img src="${iss.img}" alt=""></div><p class="lab">${LABELS[i]}</p><div class="cap"><div><p class="nm">${iss.short}</p><p class="dt">${SUBS[i]}</p></div><span class="go" aria-hidden="true">→</span></div>`;
+    covers.appendChild(c);
+  });
+
+  /* Modal helpers */
+  let lastFocus = null;
+  function openLayer(el) { lastFocus = document.activeElement; el.hidden = false; document.body.classList.add('locked'); requestAnimationFrame(() => el.classList.add('show')); }
+  function closeLayer(el) { el.classList.remove('show'); document.body.classList.remove('locked'); setTimeout(() => { el.hidden = true; if (lastFocus) lastFocus.focus(); }, reduce ? 0 : 250); }
+  function trap(el, e) { if (e.key !== 'Tab') return; const f = $$('a[href], button:not([disabled]), input, select', el).filter(x => x.offsetParent !== null); if (!f.length) return; const first = f[0], last = f[f.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } }
+
+  /* Issue popup */
+  const ov = $('#issueOverlay'); let cur = 0;
+  const up = '<svg viewBox="0 0 24 24" fill="none" stroke="#ea434d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>';
+  const doc = '<svg viewBox="0 0 24 24" fill="none" stroke="#ffcd27" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>';
+  function li(list, icon) { return list.map(([t, who, id]) => `<li><a href="${id ? A(id) : ISSUES[cur].url}" target="_blank" rel="noopener">${icon}<span>${t}<small>${who}</small></span></a></li>`).join(''); }
+  function renderIssue(i) {
+    cur = (i + ISSUES.length) % ISSUES.length; const d = ISSUES[cur];
+    $('#ipCover').src = d.img; $('#ipKicker').textContent = d.kicker; $('#ipTitle').textContent = d.title; $('#ipLede').textContent = d.lede;
+    $('#ipColA').textContent = d.colA; $('#ipColB').textContent = d.colB;
+    $('#ipListA').innerHTML = li(d.a, up); $('#ipListB').innerHTML = li(d.b, doc);
+    $('#ipFacts').innerHTML = `Published <b>${d.published}</b> · pp. <b>${d.pages}</b> · <b>${d.a.length + d.b.filter(x => x[2]).length}</b> pieces`;
+    $('#ipCta').href = d.url; $('#ipCta').textContent = 'Read the full ' + (d.short.startsWith('Volume') ? 'yearbook' : 'issue');
+    $('#ipPrevName').textContent = ISSUES[(cur - 1 + ISSUES.length) % ISSUES.length].short;
+    $('#ipNextName').textContent = ISSUES[(cur + 1) % ISSUES.length].short;
+    $('.ipop', ov).scrollTop = 0;
+  }
+  document.addEventListener('click', e => { const t = e.target.closest('[data-issue]'); if (!t) return; e.preventDefault(); renderIssue(+t.dataset.issue); openLayer(ov); setTimeout(() => $('#ipClose').focus(), 50); });
+  $('#ipClose').addEventListener('click', () => closeLayer(ov));
+  ov.addEventListener('click', e => { if (e.target === ov) closeLayer(ov); });
+  $('#ipPrev').addEventListener('click', () => renderIssue(cur - 1));
+  $('#ipNext').addEventListener('click', () => renderIssue(cur + 1));
+
+  /* Auth flow */
+  const auth = $('#auth'); const steps = ['stepEmail', 'stepCreate', 'stepLogin', 'stepSubmit']; let mode = 'submit', email = '', history = [];
+  function show(id, push = true) { const now = steps.find(s => !$('#' + s).hidden); if (push && now && now !== id) history.push(now); steps.forEach(s => $('#' + s).hidden = s !== id); $('#authBack').hidden = !history.length || id === 'stepSubmit'; const f = $('#' + id + ' input:not([type=radio]):not([type=checkbox])'); setTimeout(() => (f || $('#' + id + ' .primary')).focus(), 60); auth.scrollTop = 0; }
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-auth]'); if (!t) return; e.preventDefault(); closeMenus();
+    mode = t.dataset.auth; history = [];
+    $('#authCtx').textContent = mode === 'submit' ? 'Submit your research to Visible Language.' : 'Follow your submissions and reviews.';
+    $$('.err', auth).forEach(x => x.textContent = '');
+    show('stepEmail', false); openLayer(auth);
+  });
+  $('#authClose').addEventListener('click', () => closeLayer(auth));
+  $('#authBack').addEventListener('click', () => { const prev = history.pop(); if (prev) show(prev, false); });
+  const okEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  $('#stepEmail').addEventListener('submit', e => {
+    e.preventDefault(); const v = $('#authEmail').value.trim();
+    if (!okEmail(v)) { $('#emailErr').textContent = v ? 'Enter a full email address, like name@university.edu.' : 'Enter your email address to continue.'; $('#authEmail').focus(); return; }
+    $('#emailErr').textContent = ''; email = v; $('#chipEmail').textContent = v; $('#chipEmail2').textContent = v;
+    show(mode === 'login' ? 'stepLogin' : 'stepCreate');
+  });
+  $$('[data-sso]').forEach(b => b.addEventListener('click', () => { toast('Signed in with ' + b.dataset.sso + ' (prototype)'); finish('Signed in with ' + b.dataset.sso); }));
+  $('#editEmail').addEventListener('click', () => show('stepEmail'));
+  $('#editEmail2').addEventListener('click', () => show('stepEmail'));
+  $('#toLogin').addEventListener('click', e => { e.preventDefault(); show('stepLogin'); });
+  $('#stepCreate').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!$('#given').value.trim() || !$('#family').value.trim()) { $('#createErr').textContent = 'Add your given and family names as they should appear on your article.'; return; }
+    if ($('#pw').value.length < 8) { $('#createErr').textContent = 'Use at least 8 characters for your password.'; $('#pw').focus(); return; }
+    $('#createErr').textContent = ''; finish('Account created');
+  });
+  $('#stepLogin').addEventListener('submit', e => { e.preventDefault(); if (!$('#pw2').value) { $('#loginErr').textContent = 'Enter your password.'; $('#pw2').focus(); return; } $('#loginErr').textContent = ''; finish('Welcome back'); });
+  function finish(title) {
+    if (mode === 'login') { closeLayer(auth); toast(title + ': you’re signed in (prototype)'); $('.login').textContent = 'My account'; return; }
+    $('#doneTitle').textContent = title === 'Account created' ? 'Your account is ready' : 'You’re signed in';
+    history = []; show('stepSubmit', false); $('.login').textContent = 'My account';
+  }
+  $('#stepSubmit').addEventListener('submit', e => { e.preventDefault(); const t = ($('input[name=stype]:checked', auth) || {}).value; closeLayer(auth); toast('New ' + t.toLowerCase() + ' started (prototype)'); });
+
+  /* Article drawer */
+  const ART = {
+    8970: ['Editorial', 'The Chocolate and Oyster Flavored Donut Hole of Unoriginality', 'Matthew Peterson', 'Issue 60.2 · July 2026', ''],
+    8920: ['Research article', 'Illustrated letterforms: a taxonomy of graphemic construction', 'Hugo Maciel', 'Issue 60.2 · July 2026', ''],
+    8897: ['Research article', 'Graphic Neutralization and Gender Stereotypes in Early Childhood: How Visual Variables Shape Children’s Interpretations', 'Laura Sisti, Luciano Perondi', 'Issue 60.2 · July 2026', ''],
+    8877: ['Research article', 'Are You Sure? Exploring the Challenges and Opportunities of Using Generative AI in Communication Design Projects', 'Halldór Björn Halldórsson', 'Issue 60.2 · July 2026', ''],
+    8971: ['Invited article', 'The Concept of a Large Language Model: Misconceptions About and Beneficial Conceptualizations of LLM Technology', 'Matthew Peterson, Colleen Patton, Michael Green, Brayan Díaz', 'Issue 60.2 · July 2026', ''],
+    8866: ['Research article', 'The Terminological Development of Graphic Design: Between Office Art and Social Purpose', 'David Preston', 'Issue 60.1 · April 2026 · pp. 1–23', 'Challenges single-origin accounts of the term “graphic design” by tracing a more layered history through W. G. Raffé’s neglected 476-page handbook, Graphic Design (1927).'],
+    8924: ['Reprint', 'Metafont, Metamathematics, and Metaphysics', 'Douglas R. Hofstadter', 'Issue 60.1 · April 2026', 'Hofstadter’s response to Donald Knuth’s “The Concept of a Meta-Font”, reprinted with new commentary.'],
+    8868: ['Research article', 'Automation and Artificial Intelligence in the Type Design Process: Insights from an Industry Survey', 'Alice Savoie, Kai Bernau, Wayne Daly, Raphaela Haefliger, Sebastian Baez Lugo', 'Issue 60.1 · April 2026 · pp. 24–57', 'How deterministic automation and AI are entering professional type design, a field with exacting standards of craft, drawing on an industry survey conducted in early 2025.'],
+    8818: ['Research article', 'Evaluating Interactive Highlighting Techniques in Digital Reading', 'Szabolcs Vatány, Thi Huyen Nguyen, Illés Anikó, Ann Bessemans', 'Issue 60.1 · April 2026 · pp. 58–83', 'Tests how hover-based highlighting at the line, sentence and paragraph level affects reading speed, comprehension, perceived attention and reader preference.'],
+    8855: ['Student research', 'Beyond (Type)Face Value: A Systematic Literature Review Examining Design Factors Influencing the Legibility and Readability of Typography', 'Brian Ho Sang, Diana Petrarca', 'Issue 59.3 · December 2025 · pp. 262–294', 'Reading is how we find, understand and use information, which makes typography essential to accessibility. This review examines the design factors that shape legibility and readability.'],
+    8923: ['Editorial', 'Why Meta-Font Struck a Nerve', 'Mike Zender', 'Issue 60.1 · April 2026', ''],
+    8925: ['Editorial', 'A Profession Provoked: How Meta-Font Struck a Nerve', 'Deborah Littlejohn', 'Issue 60.1 · April 2026', ''],
+    8928: ['Editorial', 'Word | Image | Space | Materiality | Experience', 'Jeanne-Louise Moys', 'Issue 59.3 · December 2025', ''],
+    8931: ['Editorial', 'Recent Trends in Academic Publishing: Open Access, Predatory Publishers, Plagiarism, Citation Format, and Service to the Discipline', 'Matthew Peterson', 'Volume 59 · Yearbook 2025', ''],
+    8932: ['Editorial', 'The Disciplinary Status of Visual Communication or Graphic Design', 'Deborah Littlejohn', 'Volume 59 · Yearbook 2025', ''],
+    8922: ['Editorial', 'The Editors Introduce the April 2026 Issue', 'Jeanne-Louise Moys, Mike Zender, Matthew Peterson', 'Issue 60.1 · April 2026', ''],
+    8929: ['Memoir', 'Professor James Mosley, a Memoir', 'Eric Kindel', 'Issue 59.3 · December 2025', ''],
+    8930: ['Memoir', 'Professor Michael Twyman', 'Sue Walker', 'Issue 59.3 · December 2025', '']
+  };
+  const drawer = $('#drawer'); let dUrl = '';
+  function openArticle(id) {
+    const a = ART[id]; if (!a) return;
+    const [type, title, who, where, sum] = a; dUrl = A(id);
+    $('#dIssue').textContent = where.split(' · ').slice(0, 2).join(' · ');
+    $('#dType').textContent = type; $('#dTitle').textContent = title; $('#dAuthors').textContent = who;
+    $('#dFacts').textContent = where; $('#dSum').textContent = sum; $('#dSum').hidden = !sum;
+    $('#dRead').href = dUrl; $('#dSave').textContent = saved.has(id) ? 'Saved ✓' : 'Save for later'; $('#dSave').dataset.id = id;
+    openLayer(drawer); setTimeout(() => $('#dClose').focus(), 60);
+  }
+  const saved = new Set();
+  document.addEventListener('click', e => { const t = e.target.closest('[data-article]'); if (!t) return; e.preventDefault(); openArticle(t.dataset.article); });
+  document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-article][role=button]')) { e.preventDefault(); openArticle(e.target.dataset.article); } });
+  $('#dClose').addEventListener('click', () => closeLayer(drawer));
+  drawer.addEventListener('click', e => { if (e.target === drawer) closeLayer(drawer); });
+  $('#dCopy').addEventListener('click', () => { (navigator.clipboard ? navigator.clipboard.writeText(dUrl) : Promise.reject()).then(() => toast('Link copied'), () => toast(dUrl)); });
+  $('#dSave').addEventListener('click', e => { const id = e.currentTarget.dataset.id; if (saved.has(id)) { saved.delete(id); e.currentTarget.textContent = 'Save for later'; toast('Removed from your reading list'); } else { saved.add(id); e.currentTarget.textContent = 'Saved ✓'; toast('Saved to your reading list (prototype)'); } });
+
+  /* Editorials pager */
+  const pages = $$('.edpage'), edPrev = $('#edPrev'), edNext = $('#edNext'); let ep = 0;
+  function edGo(i) { ep = Math.max(0, Math.min(i, pages.length - 1)); pages.forEach((p, k) => p.classList.toggle('on', k === ep)); edPrev.disabled = ep === 0; edNext.disabled = ep === pages.length - 1; }
+  edPrev.addEventListener('click', () => edGo(ep - 1)); edNext.addEventListener('click', () => edGo(ep + 1)); edGo(0);
+
+  /* Call for papers modal */
+  const callM = $('#callModal');
+  document.addEventListener('click', e => { if (!e.target.closest('[data-call]')) return; e.preventDefault(); closeMenus(); openLayer(callM); setTimeout(() => $('#cClose').focus(), 60); });
+  $('#cClose').addEventListener('click', () => closeLayer(callM));
+  callM.addEventListener('click', e => { if (e.target === callM) closeLayer(callM); });
+  // Opening sign-in from inside the call modal closes the modal first
+  document.addEventListener('click', e => { if (e.target.closest('#callModal [data-auth]')) { callM.classList.remove('show'); callM.hidden = true; } }, true);
+
+  /* Global keys */
+  document.addEventListener('keydown', e => {
+    if (!ov.hidden) { if (e.key === 'Escape') closeLayer(ov); else if (e.key === 'ArrowLeft') renderIssue(cur - 1); else if (e.key === 'ArrowRight') renderIssue(cur + 1); else trap(ov, e); return; }
+    if (!auth.hidden) { if (e.key === 'Escape') closeLayer(auth); else trap(auth, e); return; }
+    if (!drawer.hidden) { if (e.key === 'Escape') closeLayer(drawer); else trap(drawer, e); return; }
+    if (!callM.hidden) { if (e.key === 'Escape') closeLayer(callM); else trap(callM, e); return; }
+    if (e.key === 'Escape') { closeMenus(); if (sBar.classList.contains('open')) sBtn.click(); }
+  });
+
+  /* Subscribe */
+  $('#subForm').addEventListener('submit', e => {
+    e.preventDefault(); const v = $('#subEmail').value.trim(), m = $('#subMsg');
+    if (!okEmail(v)) { m.textContent = 'Enter a valid email address, like name@university.edu.'; m.className = 'form-msg err'; $('#subEmail').focus(); return; }
+    m.textContent = 'Thanks. ' + v + ' will get new issues and calls for papers. (Prototype: nothing was sent.)'; m.className = 'form-msg'; $('#subEmail').value = '';
+  });
+})();
+</script>
+
+</body>
+</html>
